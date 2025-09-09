@@ -1,6 +1,8 @@
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using NLog;
 using NLog.Web;
 using PruebaTecnicaKaprielian.Extensions;
+using PruebaTecnicaKaprielian.HealthChecks;
 
 try
 {
@@ -14,6 +16,9 @@ try
     builder.Services.AddNhibernate("Server=localhost;Port=3306; Database=pruebatecnica; Uid=root; Pwd=root; SslMode=required;persistsecurityinfo=True");
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+    builder.Services.AddHealthChecks()
+    .AddCheck<HealthCheckServices>("HealthCheck", HealthStatus.Unhealthy);
+
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
@@ -24,7 +29,7 @@ try
     app.UseHttpsRedirection();
 
     app.UseAuthorization();
-
+    app.MapHealthChecks("/Health/Index");
     app.MapControllers();
 
     app.Run();
