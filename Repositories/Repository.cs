@@ -46,5 +46,12 @@ namespace PruebaTecnicaKaprielian.Repositories
             await Session.UpdateAsync(entity);
             await Session.FlushAsync();
         }
+
+        public async Task DeleteAsync(T entity)
+        {
+            await Session.DeleteAsync(entity);
+            await Session.FlushAsync();
+
+        }
     }
 }

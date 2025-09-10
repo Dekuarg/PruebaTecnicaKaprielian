@@ -1,4 +1,7 @@
-﻿using PruebaTecnicaKaprielian.Dtos;
+﻿using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.Ocsp;
+using PruebaTecnicaKaprielian.Dtos;
+using System.Text.Json.Serialization;
 
 namespace PruebaTecnicaKaprielian.Middleware
 {
@@ -17,8 +20,22 @@ namespace PruebaTecnicaKaprielian.Middleware
         {
             try
             {
-                _logger.LogInformation("Se ingresa data");
+                var request = context.Request;
+
+                var logData = new
+                {
+                    request.Method,
+                    Url = $"{request.Scheme}://{request.Host}{request.Path}{request.QueryString}",
+                };
+
+                logData = new
+                {
+                    logData.Method,
+                    logData.Url
+                };
+                _logger.LogInformation($"Logeo de Informacion {JsonConvert.SerializeObject(logData)}");
                 await _next(context);
+                _logger.LogInformation("Saliendo de la request");
             }
             catch (Exception e)
             {

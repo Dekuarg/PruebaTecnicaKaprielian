@@ -18,7 +18,15 @@ try
     builder.Services.AddSwaggerGen();
     builder.Services.AddHealthChecks()
     .AddCheck<HealthCheckServices>("HealthCheck", HealthStatus.Unhealthy);
-
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowAll", policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+    });
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
@@ -27,7 +35,7 @@ try
 
     app.UseMiddleware<PruebaTecnicaKaprielian.Middleware.RequestMiddleware>();
     app.UseHttpsRedirection();
-
+    app.UseCors("AllowAll");
     app.UseAuthorization();
     app.MapHealthChecks("/Health/Index");
     app.MapControllers();

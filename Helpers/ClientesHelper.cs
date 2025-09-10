@@ -78,5 +78,20 @@ namespace PruebaTecnicaKaprielian.Helpers
 
             return new ContentResult { StatusCode = 200, ContentType = "application/json", Content = "Cliente actualizado con exito" };
         }
+
+        public static async Task<ActionResult> Delete(IUnitOfWork unitOfWork, int id)
+        {
+            ClientesRepository clientesRepository = new(unitOfWork);
+
+            var clienteToDelete = await clientesRepository.FindByAsync(x => x.Id == id);
+
+            if (clienteToDelete == null)
+                return new ContentResult { StatusCode = 200, ContentType = "application/json", Content = "No se encuentra el cliente que busca" };
+
+            await clientesRepository.DeleteAsync(clienteToDelete);
+
+            return new ContentResult { StatusCode = 200, ContentType = "application/json", Content = "Cliente eliminado con exito" };
+        }
+
     }
 }

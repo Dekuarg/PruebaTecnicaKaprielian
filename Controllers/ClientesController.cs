@@ -62,13 +62,23 @@ namespace PruebaTecnicaKaprielian.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> Update([Required] ClienteUpdateDto data)
+        public async Task<ActionResult> Update( ClienteUpdateDto data)
         {
             ClientUpdateValidation validator = new();
 
             validator.ValidateAndThrow(data);
 
             return Ok(await ClientesHelper.Update(_unitOfWork, data));
+
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            if (id == 0)
+                return BadRequest("ID es requerido");
+
+            return Ok(await ClientesHelper.Delete(_unitOfWork, id));
 
         }
     }
